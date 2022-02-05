@@ -1,137 +1,132 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import {
+	Editor,
+	EditorPosition,
+	EditorSuggest,
+	EditorSuggestContext,
+	EditorSuggestTriggerInfo,
+	Plugin,
+	TFile,
+	getAllTags,
+	App,
+	CachedMetadata,
+	SectionCache,
+} from "obsidian";
 
-// Remember to rename these classes and interfaces!
+function getTagSet(app: App) {
+	const tags = new Set<string>();
+	const files = app.vault.getMarkdownFiles();
+	const cache = app.metadataCache;
 
-interface MyPluginSettings {
-	mySetting: string;
+	const a = performance.now();
+	let testCache: CachedMetadata;
+	for (const file of files) {
+		let fileCache = cache.getFileCache(file);
+		testCache = fileCache;
+		if (fileCache) {
+			getAllTags(fileCache)?.forEach((t) => tags.add(t));
+		}
+	}
+	const b = performance.now();
+	console.info(`tags indexed in ${(b - a).toPrecision(2)}ms`);
+
+	return tags;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
-
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
-
-	async onload() {
-		await this.loadSettings();
-
-		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-		});
-		// Perform additional things with the ribbon
-		ribbonIconEl.addClass('my-plugin-ribbon-class');
-
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status Bar Text');
-
-		// This adds a simple command that can be triggered anywhere
-		this.addCommand({
-			id: 'open-sample-modal-simple',
-			name: 'Open sample modal (simple)',
-			callback: () => {
-				new SampleModal(this.app).open();
-			}
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'sample-editor-command',
-			name: 'Sample editor command',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getSelection());
-				editor.replaceSelection('Sample Editor Command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-sample-modal-complex',
-			name: 'Open sample modal (complex)',
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
-
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
-				}
-			}
-		});
-
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
-	}
-
-	onunload() {
-
-	}
-
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
+export default class FrontmatterTagWizardPlugin extends Plugin {
+	onload() {
+		console.log("registering", this.app);
+		this.registerEditorSuggest(new TagWizard(this.app));
 	}
 }
 
-class SampleModal extends Modal {
+class TagWizard extends EditorSuggest<string> {
+	private app: App;
+	private tags: Set<string>;
+	private tagHeadRegex = /tags:|tag:/i;
+	private matchLast = /[\w-]+$/;
+
 	constructor(app: App) {
 		super(app);
+		this.app = app;
 	}
 
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
+	onTrigger(
+		cursor: EditorPosition,
+		editor: Editor,
+		file: TFile
+	): EditorSuggestTriggerInfo {
+		if (!this.isValidLine(cursor, editor, file)) return null;
+		this.tags = getTagSet(this.app);
+
+		const line = editor.getLine(cursor.line).slice(0, cursor.ch);
+		const matched = line.match(this.matchLast);
+
+		if (matched !== null) {
+			const matchData = {
+				start: {
+					ch: matched.index,
+					line: cursor.line,
+				},
+				end: cursor,
+				query: matched[0].toLowerCase(),
+			};
+
+			return matchData;
+		}
+
+		return null;
 	}
 
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
+	/* --------------------------- Line Determination --------------------------- */
+	isValidLine(cursor: EditorPosition, editor: Editor, file: TFile) {
+		const cache = this.app.metadataCache.getFileCache(file);
+
+		if (!this.isCursorInFrontmatter(cursor, cache.sections[0])) {
+			return false;
+		}
+
+		if (!this.isCursorOnTagLine(cursor, editor)) {
+			return false;
+		}
+
+		return true;
 	}
-}
 
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
+	isCursorInFrontmatter(cursor: EditorPosition, section: SectionCache) {
+		if (section.type !== "yaml") {
+			return false;
+		}
+		if (cursor.line >= section.position.end.line) {
+			return false;
+		}
+		return true;
 	}
 
-	display(): void {
-		const {containerEl} = this;
+	isCursorOnTagLine(cursor: EditorPosition, editor: Editor) {
+		const line = editor.getLine(cursor.line);
+		if (line.match(this.tagHeadRegex) !== null) return true;
+	}
 
-		containerEl.empty();
+	/* -------------------------------- Obsidian -------------------------------- */
+	getSuggestions(context: EditorSuggestContext): string[] {
+		const suggestions = Array.from(this.tags.values()).filter((t) =>
+			t.toLowerCase().contains(context.query)
+		);
+		return suggestions;
+	}
 
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
+	renderSuggestion(suggestion: string, el: HTMLElement): void {
+		const outer = el.createDiv({ cls: "ES-suggester-container" });
+		outer.createDiv({ cls: "ES-tags" }).setText(`${suggestion}`);
+	}
 
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
+	selectSuggestion(suggestion: string): void {
+		if (this.context) {
+			(this.context.editor as Editor).replaceRange(
+				`${suggestion}`,
+				this.context.start,
+				this.context.end
+			);
+		}
 	}
 }

@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
-	"version": "1.0.1",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"name": "obsidian-frontmatter-tag-wizard",
+	"version": "0.0.0",
+	"description": "This plugin streamlines adding tags to a note's YAML frontmatter.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
