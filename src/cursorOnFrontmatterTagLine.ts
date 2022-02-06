@@ -17,11 +17,11 @@ function isCursorOnTagLine(cursor: EditorPosition, editor: Editor) {
 	if (line.match(matchTagsKey) !== null) return true;
 }
 
-export function isFrontmatterTagLine(
+export function cursorOnFrontmatterTagLine(
 	cache: CachedMetadata,
 	cursor: EditorPosition,
 	editor: Editor
-) {
+): boolean {
 	if (!isCursorInFrontmatter(cursor, cache.sections[0])) {
 		return false;
 	}

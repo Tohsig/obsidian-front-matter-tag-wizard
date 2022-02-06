@@ -8,14 +8,14 @@ import {
 	App,
 } from "obsidian";
 import { extractTagsFromFileCaches } from "./extractTagsFromFileCaches";
-import { isFrontmatterTagLine } from "./isFrontmatterTagLine";
-import { formatFrontmatterTags } from "./formatFrontmatterTags";
+import { cursorOnFrontmatterTagLine } from "./cursorOnFrontmatterTagLine";
+import { yamlFormatTags } from "./formatFrontmatterTags";
 
 const matchLastTag = /[\w-]+$/;
 
 export class TagWizardSuggest extends EditorSuggest<string> {
 	private app: App;
-	private tags: Set<string>;
+	private curFileName: string;
 	private prevFileName: string;
 	private queueFormatTagValues = false;
 	private tagLineStart = 0;
@@ -30,25 +30,46 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 		editor: Editor,
 		file: TFile
 	): EditorSuggestTriggerInfo {
+		this.curFileName = file.name;
+
 		const cache = this.app.metadataCache.getFileCache(file);
-		if (!isFrontmatterTagLine(cache, cursor, editor)) {
-			if (this.queueFormatTagValues && file.name === this.prevFileName) {
-				formatFrontmatterTags(editor, this.tagLineStart);
-				this.queueFormatTagValues = false;
-			}
+		if (!cursorOnFrontmatterTagLine(cache, cursor, editor)) {
+			if (this.queueFormatTagValues) this.formatTags(editor);
 			return null;
 		}
 
 		this.queueFormatTagValues = true;
 		this.prevFileName = file.name;
 		this.tagLineStart = cursor.line;
-		this.updateTags();
 
+		return this.matchPartialTag(cursor, editor);
+	}
+
+	/* ------------------------------- Manage Tags ------------------------------ */
+	getTags(): string[] {
+		const cache = this.app.metadataCache;
+		const files = this.app.vault.getMarkdownFiles();
+		const tagSet = extractTagsFromFileCaches(cache, files);
+		return Array.from(tagSet.values());
+	}
+
+	formatTags(editor: Editor, lineNumber = this.tagLineStart): void {
+		this.queueFormatTagValues = false;
+		if (this.curFileName !== this.prevFileName) return;
+		const oldLine = editor.getLine(lineNumber);
+		const newLine = yamlFormatTags(oldLine);
+		editor.setLine(lineNumber, newLine);
+	}
+
+	matchPartialTag(
+		cursor: EditorPosition,
+		editor: Editor
+	): EditorSuggestTriggerInfo {
 		const line = editor.getLine(cursor.line).slice(0, cursor.ch);
 		const matched = line.match(matchLastTag);
 
 		if (matched !== null) {
-			const matchData = {
+			return {
 				start: {
 					ch: matched.index,
 					line: cursor.line,
@@ -56,27 +77,17 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 				end: cursor,
 				query: matched[0],
 			};
-
-			return matchData;
 		}
 
 		return null;
 	}
 
-	updateTags() {
-		const cache = this.app.metadataCache;
-		const files = this.app.vault.getMarkdownFiles();
-		this.tags = extractTagsFromFileCaches(cache, files);
-	}
-
 	/* -------------------------------- Obsidian -------------------------------- */
 	getSuggestions(context: EditorSuggestContext): string[] {
-		const tagList = Array.from(this.tags.values());
-		const suggestions = tagList.filter((t) => {
-			const tag = t.toLowerCase();
-			const query = context.query.toLowerCase();
-			return tag.contains(query);
-		});
+		const query = context.query.toLowerCase();
+		const suggestions = this.getTags().filter((t) =>
+			t.toLowerCase().includes(query)
+		);
 
 		return suggestions;
 	}
@@ -94,7 +105,7 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 				this.context.end
 			);
 
-			formatFrontmatterTags(this.context.editor, this.context.start.line);
+			this.formatTags(this.context.editor, this.context.start.line);
 		}
 	}
 }
