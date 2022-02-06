@@ -9,7 +9,6 @@ import {
 	getAllTags,
 	App,
 	MetadataCache,
-	CachedMetadata,
 	SectionCache,
 } from "obsidian";
 
@@ -42,7 +41,6 @@ export default class FrontmatterTagWizardPlugin extends Plugin {
 class TagWizard extends EditorSuggest<string> {
 	private app: App;
 	private tags: Set<string>;
-	private fileTags: Set<string>;
 	private matchTagsKey = /tags:|tag:/i;
 	private matchLast = /[\w-]+$/;
 
@@ -112,32 +110,39 @@ class TagWizard extends EditorSuggest<string> {
 		const cache = this.app.metadataCache;
 		const files = this.app.vault.getMarkdownFiles();
 		this.tags = extractTags(cache, files);
-		this.fileTags = extractTags(cache, [file]);
 	}
 
 	/* -------------------------------- Obsidian -------------------------------- */
 	getSuggestions(context: EditorSuggestContext): string[] {
-		const suggestions = Array.from(this.tags.values()).filter((t) => {
-			const tLower = t.toLowerCase();
-			const qLower = context.query.toLowerCase();
-			if (this.fileTags.has(t)) return false;
-			return tLower.contains(qLower);
+		const tagList = Array.from(this.tags.values());
+		const suggestions = tagList.filter((t) => {
+			const tag = t.toLowerCase();
+			const query = context.query.toLowerCase();
+			return tag.contains(query);
 		});
 
 		return suggestions;
 	}
 
 	renderSuggestion(suggestion: string, el: HTMLElement): void {
-		const outer = el.createDiv({ cls: "ES-suggester-container" });
-		outer.createDiv({ cls: "ES-tags" }).setText(`#${suggestion}`);
+		const outer = el.createDiv();
+		outer.createDiv().setText(`#${suggestion}`);
 	}
 
 	selectSuggestion(suggestion: string): void {
 		if (this.context) {
 			this.context.editor.replaceRange(
-				`${suggestion}`,
+				`${suggestion} `,
 				this.context.start,
 				this.context.end
+			);
+
+			const line = this.context.editor.getLine(this.context.start.line);
+			const [head, ...tail] = line.match(/[^:\s,]+/g);
+			const tags = Array.from(new Set(tail));
+			this.context.editor.setLine(
+				this.context.start.line,
+				`${head}: ${tags.join(", ")} `
 			);
 		}
 	}
