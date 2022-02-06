@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-frontmatter-tag-wizard",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "This plugin streamlines adding tags to a note's YAML frontmatter.",
 	"main": "main.js",
 	"scripts": {
@@ -9,7 +9,7 @@
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Tohsgig",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
