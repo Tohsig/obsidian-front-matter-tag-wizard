@@ -8,26 +8,26 @@ import {
 	TFile,
 	getAllTags,
 	App,
+	MetadataCache,
 	CachedMetadata,
 	SectionCache,
 } from "obsidian";
 
-function getTagSet(app: App) {
+function extractTags(metadataCache: MetadataCache, files: TFile[]) {
 	const tags = new Set<string>();
-	const files = app.vault.getMarkdownFiles();
-	const cache = app.metadataCache;
 
 	const a = performance.now();
-	let testCache: CachedMetadata;
 	for (const file of files) {
-		let fileCache = cache.getFileCache(file);
-		testCache = fileCache;
+		let fileCache = metadataCache.getFileCache(file);
 		if (fileCache) {
-			getAllTags(fileCache)?.forEach((t) => tags.add(t));
+			getAllTags(fileCache)?.forEach((t) => {
+				const tag = t.replace("#", "");
+				tags.add(tag);
+			});
 		}
 	}
 	const b = performance.now();
-	console.info(`tags indexed in ${(b - a).toPrecision(2)}ms`);
+	console.info(`tags extraced in ${(b - a).toPrecision(2)}ms`);
 
 	return tags;
 }
@@ -42,7 +42,8 @@ export default class FrontmatterTagWizardPlugin extends Plugin {
 class TagWizard extends EditorSuggest<string> {
 	private app: App;
 	private tags: Set<string>;
-	private tagHeadRegex = /tags:|tag:/i;
+	private fileTags: Set<string>;
+	private matchTagsKey = /tags:|tag:/i;
 	private matchLast = /[\w-]+$/;
 
 	constructor(app: App) {
@@ -56,7 +57,7 @@ class TagWizard extends EditorSuggest<string> {
 		file: TFile
 	): EditorSuggestTriggerInfo {
 		if (!this.isValidLine(cursor, editor, file)) return null;
-		this.tags = getTagSet(this.app);
+		this.updateTags(file);
 
 		const line = editor.getLine(cursor.line).slice(0, cursor.ch);
 		const matched = line.match(this.matchLast);
@@ -68,7 +69,7 @@ class TagWizard extends EditorSuggest<string> {
 					line: cursor.line,
 				},
 				end: cursor,
-				query: matched[0].toLowerCase(),
+				query: matched[0],
 			};
 
 			return matchData;
@@ -104,25 +105,36 @@ class TagWizard extends EditorSuggest<string> {
 
 	isCursorOnTagLine(cursor: EditorPosition, editor: Editor) {
 		const line = editor.getLine(cursor.line);
-		if (line.match(this.tagHeadRegex) !== null) return true;
+		if (line.match(this.matchTagsKey) !== null) return true;
+	}
+
+	updateTags(file: TFile) {
+		const cache = this.app.metadataCache;
+		const files = this.app.vault.getMarkdownFiles();
+		this.tags = extractTags(cache, files);
+		this.fileTags = extractTags(cache, [file]);
 	}
 
 	/* -------------------------------- Obsidian -------------------------------- */
 	getSuggestions(context: EditorSuggestContext): string[] {
-		const suggestions = Array.from(this.tags.values()).filter((t) =>
-			t.toLowerCase().contains(context.query)
-		);
+		const suggestions = Array.from(this.tags.values()).filter((t) => {
+			const tLower = t.toLowerCase();
+			const qLower = context.query.toLowerCase();
+			if (this.fileTags.has(t)) return false;
+			return tLower.contains(qLower);
+		});
+
 		return suggestions;
 	}
 
 	renderSuggestion(suggestion: string, el: HTMLElement): void {
 		const outer = el.createDiv({ cls: "ES-suggester-container" });
-		outer.createDiv({ cls: "ES-tags" }).setText(`${suggestion}`);
+		outer.createDiv({ cls: "ES-tags" }).setText(`#${suggestion}`);
 	}
 
 	selectSuggestion(suggestion: string): void {
 		if (this.context) {
-			(this.context.editor as Editor).replaceRange(
+			this.context.editor.replaceRange(
 				`${suggestion}`,
 				this.context.start,
 				this.context.end
