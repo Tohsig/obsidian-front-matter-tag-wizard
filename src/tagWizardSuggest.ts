@@ -16,6 +16,7 @@ const matchLastTag = /[\w-]+$/;
 export class TagWizardSuggest extends EditorSuggest<string> {
 	private app: App;
 	private tags: Set<string>;
+	private prevFileName: string;
 	private queueFormatTagValues = false;
 	private tagLineStart = 0;
 
@@ -31,7 +32,7 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 	): EditorSuggestTriggerInfo {
 		const cache = this.app.metadataCache.getFileCache(file);
 		if (!isFrontmatterTagLine(cache, cursor, editor)) {
-			if (this.queueFormatTagValues) {
+			if (this.queueFormatTagValues && file.name === this.prevFileName) {
 				formatFrontmatterTags(editor, this.tagLineStart);
 				this.queueFormatTagValues = false;
 			}
@@ -39,6 +40,7 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 		}
 
 		this.queueFormatTagValues = true;
+		this.prevFileName = file.name;
 		this.tagLineStart = cursor.line;
 		this.updateTags();
 
