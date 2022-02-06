@@ -1,72 +1,78 @@
-## Obsidian Sample Plugin
+# Obsidian Frontmatter Tag Wizard - Beta
+Tired of having to type `#` to get tag autocompletion in your [Obsidian](https://obsidian.md/) note frontmatter? I feel your pain. This plugin enables tag autocompletion in your frontmatter...and beautifully formats those same tags to boot!
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+## Features
+- Enables Tag autocompletion in frontmatter.
+- Fully supports multiline tags!
+- Optional Tag Autoformatting (default: enabled).
+  - Only affects frontmatter tags.
+  - Standardizes tag spacing
+  - Removes duplicate tags.
+  - Indents mutliline tags
+  - Can seamlessly convert single line tags to multiline tags and vice versa.
+  - Optional removal of the `#` and `"` characters from tags (default: enabled).
 
-This project uses Typescript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in Typescript Definition format, which contains TSDoc comments describing what it does.
+## Getting Started
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+This plugin has not yet been submitted to Obsidian for review, but in the meantime it can be installed for testing via the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin.
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Changes the default font color to red using `styles.css`.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+Once that plugin is installed, you can go to its settings page, click "Add Beta plugin" and enter the following URL:
+```
+https://github.com/Tohsig/obsidian-frontmater-tag-wizard
+```
 
-### First time developing plugins?
+Once installed and enabled, Frontmatter Tag Wizard will immediately start giving you tag autocompletion andn formatting your frontmatter tags.
 
-Quick starting guide for new plugin devs:
+If you only want the autocompletion, you can go to the Frontmatter Tag Wizard settings and turn off the autoformatting completely.
 
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+## Roadmap
 
-### Releasing new releases
+- [ ] Add an option to sort frontmatter tags alphabetically.
+- [ ] Allow autoformatter to edit background notes.
+- [ ] Get some saner YAML parsing in here.
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+## Contributing
+Feel free to submit issues for bug reports and additional features! This is a project I spun up to support my daily workflow, so I'll be very interested to hear how it does elsewhre.
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+## Known Issues
+I wrote the first version of this plugin over a weekend, so it has some goofy edge cases. This plugin is designed to support my daily workflow...so these will definitely get fixed.
 
-### Adding your plugin to the community plugin list
+### The...did it work?
+If you type out a tag without using the autocomplete suggestion and then immediately click on another note, the autoformatter may not run.
 
-- Check https://github.com/obsidianmd/obsidian-releases/blob/master/plugin-review.md
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+**Workaround**
+Always use the suggestion pop up, or always move the cursor off of the frontmatter tags before switching notes. Either will trigger the formatting.
 
-### How to use
+### The Speed Demon
+If you're using multiline mode, your `tags:` key is at the bottom of your frontmatter, and you hit `enter` quickly...there's a chance that the autoformatter will kick in and remove all of empty lines (including your cursor line).
 
-- Clone this repo.
-- `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
+**Workaround**
+I guess this is a borderline feature. I have a partial workaround in the code already, so you may never see this one.
 
-### Manually installing the plugin
+### The Dine and Dash
+If you're using multiline mode *and* you have tags that start with one or more dashes (e.g. `-sampleTag`), the first dash will be removed in a very specific situation. Dashes in between tag words are not affected (e.g. `sample-tag`).
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+**Workaround**
+This bug is due to how I'm handling YAML at the moment. Workaround is in the example below.
 
-### Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint .\src\`
+```yaml
+# If you type:
+tags:
+-sampleTag
 
+# You'll get:
+tags:
+  - sampleTag
 
-### API Documentation
+# Workaround is to always have a leading dash:
+tags:
+- -sampleTag
 
-See https://github.com/obsidianmd/obsidian-api
+# Then you'll get:
+tags:
+  - -sampleTag
+```
+
+## Acknowledgments
+
+Huge thanks to the incredible [Obsidian Dataview](https://github.com/blacksmithgu/obsidian-dataview) and [Obsidian Plugin Developer Docs](https://marcus.se.net/obsidian-plugin-docs/) projects. I was able to learn a ton about Obsidian's API from both, and I highly recommend them if you want to develop a plugin.
