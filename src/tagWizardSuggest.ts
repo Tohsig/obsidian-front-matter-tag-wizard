@@ -10,6 +10,7 @@ import {
 import { extractTagsFromFileCaches } from "./extractTagsFromFileCaches";
 import { cursorOnFrontmatterTagLine } from "./cursorOnFrontmatterTagLine";
 import { yamlFormatTags } from "./yamlFormatTags";
+import { FrontmatterTagWizardPluginSettings } from "./main";
 
 const matchLastTag = /[\w-]+$/;
 
@@ -19,10 +20,12 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 	private prevFileName: string;
 	private queueFormatTagValues = false;
 	private tagLineStart = 0;
+	private settings: FrontmatterTagWizardPluginSettings;
 
-	constructor(app: App) {
+	constructor(app: App, settings: FrontmatterTagWizardPluginSettings) {
 		super(app);
 		this.app = app;
+		this.settings = settings;
 	}
 
 	onTrigger(
@@ -53,7 +56,9 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 		return Array.from(tagSet.values());
 	}
 
-	formatTags(editor: Editor, lineNumber = this.tagLineStart): void {
+	formatTags(editor: Editor): void {
+		if (!this.settings.autoFormat) return;
+
 		const [startLine, endLine] = this.getTagBlockBounds(editor);
 		if (!startLine || !endLine) return;
 
@@ -67,7 +72,11 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 
 		this.queueFormatTagValues = false;
 		if (this.curFileName !== this.prevFileName) return;
-		const newLine = yamlFormatTags(lines.join("\n"), "multiLine");
+		const newLine = yamlFormatTags(
+			lines.join("\n"),
+			this.settings.mode,
+			this.settings.removeExtraCharacters
+		);
 		editor.replaceRange(
 			newLine,
 			{ line: startLine, ch: 0 },
@@ -142,7 +151,7 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 				this.context.end
 			);
 
-			this.formatTags(this.context.editor, this.context.start.line);
+			this.formatTags(this.context.editor);
 		}
 	}
 }
