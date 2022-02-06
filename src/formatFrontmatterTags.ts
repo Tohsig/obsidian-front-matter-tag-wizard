@@ -1,6 +1,6 @@
 import { Editor } from "obsidian";
 
-export function formatTagValues(editor: Editor, lineNumber: number) {
+export function formatFrontmatterTags(editor: Editor, lineNumber: number) {
 	console.log("formatting line", lineNumber);
 	const line = editor.getLine(lineNumber);
 	const [head, ...tail] = line.match(/[^:\s,]+/g);
