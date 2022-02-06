@@ -1,4 +1,4 @@
-const reReplace = /[:\s,#"']+/g;
+const reReplace = /^\s*-|[:\s,#"']+/g;
 const reSplit = /[^:\s,#"']+/g;
 
 function parseTags(text: string) {
@@ -7,7 +7,7 @@ function parseTags(text: string) {
 	if (text.includes("\n")) {
 		const [_head, ...tail] = text
 			.split("\n")
-			.map((t) => t.replace(reReplace, "").trim())
+			.map((t) => t.replace(reReplace, ""))
 			.filter((t) => t.length);
 
 		tagSet = new Set(tail);
@@ -26,11 +26,13 @@ function parseTags(text: string) {
 
 function singleLine(text: string) {
 	const tags = parseTags(text);
+	if (!tags.length) return "tags: ";
 	return `tags: ${tags.join(", ")} `;
 }
 
 function multiLine(text: string) {
 	const tags = parseTags(text);
+	if (!tags.length) return "tags: ";
 	return `tags:\n  - ${tags.join("\n  - ")} `;
 }
 
