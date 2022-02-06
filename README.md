@@ -18,7 +18,7 @@ This plugin has not yet been submitted to Obsidian for review, but in the meanti
 
 Once that plugin is installed, you can go to its settings page, click "Add Beta plugin" and enter the following URL:
 ```
-https://github.com/Tohsig/obsidian-frontmater-tag-wizard
+https://github.com/Tohsig/obsidian-frontmatter-tag-wizard
 ```
 
 Once installed and enabled, Frontmatter Tag Wizard will immediately start giving you tag autocompletion and autoformatting.
