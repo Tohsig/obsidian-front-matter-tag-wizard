@@ -55,6 +55,8 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 
 	formatTags(editor: Editor, lineNumber = this.tagLineStart): void {
 		const [startLine, endLine] = this.getTagBlockBounds(editor);
+		if (!startLine || !endLine) return;
+
 		const lines: string[] = [];
 		let endCh = 0;
 		for (let i = startLine; i <= endLine; i++) {
