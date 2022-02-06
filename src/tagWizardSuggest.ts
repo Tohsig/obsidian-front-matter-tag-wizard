@@ -7,15 +7,16 @@ import {
 	TFile,
 	App,
 } from "obsidian";
-import { extractTags } from "./extractTags";
-import { isValidLine } from "./isFrontmatterTagLine";
-import { formatTagValues } from "./formatTagValues";
+import { extractTagsFromFileCaches } from "./extractTagsFromFileCaches";
+import { isFrontmatterTagLine } from "./isFrontmatterTagLine";
+import { formatFrontmatterTags } from "./formatFrontmatterTags";
 
-export class TagWizard extends EditorSuggest<string> {
+const matchLastTag = /[\w-]+$/;
+
+export class TagWizardSuggest extends EditorSuggest<string> {
 	private app: App;
 	private tags: Set<string>;
-	private matchLast = /[\w-]+$/;
-	private queueFormat = false;
+	private queueFormatTagValues = false;
 	private tagLineStart = 0;
 
 	constructor(app: App) {
@@ -29,20 +30,20 @@ export class TagWizard extends EditorSuggest<string> {
 		file: TFile
 	): EditorSuggestTriggerInfo {
 		const cache = this.app.metadataCache.getFileCache(file);
-		if (!isValidLine(cache, cursor, editor)) {
-			if (this.queueFormat) {
-				formatTagValues(editor, this.tagLineStart);
-				this.queueFormat = false;
+		if (!isFrontmatterTagLine(cache, cursor, editor)) {
+			if (this.queueFormatTagValues) {
+				formatFrontmatterTags(editor, this.tagLineStart);
+				this.queueFormatTagValues = false;
 			}
 			return null;
 		}
 
-		this.queueFormat = true;
+		this.queueFormatTagValues = true;
 		this.tagLineStart = cursor.line;
 		this.updateTags();
 
 		const line = editor.getLine(cursor.line).slice(0, cursor.ch);
-		const matched = line.match(this.matchLast);
+		const matched = line.match(matchLastTag);
 
 		if (matched !== null) {
 			const matchData = {
@@ -63,7 +64,7 @@ export class TagWizard extends EditorSuggest<string> {
 	updateTags() {
 		const cache = this.app.metadataCache;
 		const files = this.app.vault.getMarkdownFiles();
-		this.tags = extractTags(cache, files);
+		this.tags = extractTagsFromFileCaches(cache, files);
 	}
 
 	/* -------------------------------- Obsidian -------------------------------- */
@@ -91,7 +92,7 @@ export class TagWizard extends EditorSuggest<string> {
 				this.context.end
 			);
 
-			formatTagValues(this.context.editor, this.context.start.line);
+			formatFrontmatterTags(this.context.editor, this.context.start.line);
 		}
 	}
 }

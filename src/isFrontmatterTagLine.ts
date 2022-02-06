@@ -17,7 +17,7 @@ function isCursorOnTagLine(cursor: EditorPosition, editor: Editor) {
 	if (line.match(matchTagsKey) !== null) return true;
 }
 
-export function isValidLine(
+export function isFrontmatterTagLine(
 	cache: CachedMetadata,
 	cursor: EditorPosition,
 	editor: Editor

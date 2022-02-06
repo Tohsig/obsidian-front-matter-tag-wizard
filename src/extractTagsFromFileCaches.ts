@@ -1,6 +1,9 @@
 import { getAllTags, MetadataCache, TFile } from "obsidian";
 
-export function extractTags(metadataCache: MetadataCache, files: TFile[]) {
+export function extractTagsFromFileCaches(
+	metadataCache: MetadataCache,
+	files: TFile[]
+) {
 	const tags = new Set<string>();
 
 	const a = performance.now();
