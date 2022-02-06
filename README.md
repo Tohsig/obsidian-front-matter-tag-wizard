@@ -4,13 +4,13 @@ Tired of having to type `#` to get tag autocompletion in your [Obsidian](https:/
 ## Features
 - Enables Tag autocompletion in frontmatter.
 - Fully supports multiline tags!
-- Optional Tag Autoformatting (default: enabled).
+- Optional Tag Autoformatting (default: `enabled`).
   - Only affects frontmatter tags.
   - Standardizes tag spacing
   - Removes duplicate tags.
   - Indents mutliline tags
   - Can seamlessly convert single line tags to multiline tags and vice versa.
-  - Optional removal of the `#` and `"` characters from tags (default: enabled).
+  - Optional removal of the `#` and `"` characters from tags (default: `enabled`).
 
 ## Getting Started
 
@@ -21,7 +21,7 @@ Once that plugin is installed, you can go to its settings page, click "Add Beta 
 https://github.com/Tohsig/obsidian-frontmater-tag-wizard
 ```
 
-Once installed and enabled, Frontmatter Tag Wizard will immediately start giving you tag autocompletion andn formatting your frontmatter tags.
+Once installed and enabled, Frontmatter Tag Wizard will immediately start giving you tag autocompletion and autoformatting.
 
 If you only want the autocompletion, you can go to the Frontmatter Tag Wizard settings and turn off the autoformatting completely.
 
