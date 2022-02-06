@@ -9,11 +9,14 @@ import {
 } from "obsidian";
 import { extractTags } from "./extractTags";
 import { isValidLine } from "./isFrontmatterTagLine";
+import { formatTagValues } from "./formatTagValues";
 
 export class TagWizard extends EditorSuggest<string> {
 	private app: App;
 	private tags: Set<string>;
 	private matchLast = /[\w-]+$/;
+	private queueFormat = false;
+	private tagLineStart = 0;
 
 	constructor(app: App) {
 		super(app);
@@ -26,8 +29,16 @@ export class TagWizard extends EditorSuggest<string> {
 		file: TFile
 	): EditorSuggestTriggerInfo {
 		const cache = this.app.metadataCache.getFileCache(file);
-		if (!isValidLine(cache, cursor, editor)) return null;
+		if (!isValidLine(cache, cursor, editor)) {
+			if (this.queueFormat) {
+				formatTagValues(editor, this.tagLineStart);
+				this.queueFormat = false;
+			}
+			return null;
+		}
 
+		this.queueFormat = true;
+		this.tagLineStart = cursor.line;
 		this.updateTags();
 
 		const line = editor.getLine(cursor.line).slice(0, cursor.ch);
@@ -80,13 +91,7 @@ export class TagWizard extends EditorSuggest<string> {
 				this.context.end
 			);
 
-			const line = this.context.editor.getLine(this.context.start.line);
-			const [head, ...tail] = line.match(/[^:\s,]+/g);
-			const tags = Array.from(new Set(tail));
-			this.context.editor.setLine(
-				this.context.start.line,
-				`${head}: ${tags.join(", ")} `
-			);
+			formatTagValues(this.context.editor, this.context.start.line);
 		}
 	}
 }
