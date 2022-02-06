@@ -9,7 +9,7 @@ import {
 } from "obsidian";
 import { extractTagsFromFileCaches } from "./extractTagsFromFileCaches";
 import { cursorOnFrontmatterTagLine } from "./cursorOnFrontmatterTagLine";
-import { yamlFormatTags } from "./formatFrontmatterTags";
+import { yamlFormatTags } from "./yamlFormatTags";
 
 const matchLastTag = /[\w-]+$/;
 
@@ -54,11 +54,46 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 	}
 
 	formatTags(editor: Editor, lineNumber = this.tagLineStart): void {
+		const [startLine, endLine] = this.getTagBlockBounds(editor);
+		const lines: string[] = [];
+		let endCh = 0;
+		for (let i = startLine; i <= endLine; i++) {
+			const line = editor.getLine(i);
+			lines.push(line);
+			if (i === endLine) endCh = line.length;
+		}
+
 		this.queueFormatTagValues = false;
 		if (this.curFileName !== this.prevFileName) return;
-		const oldLine = editor.getLine(lineNumber);
-		const newLine = yamlFormatTags(oldLine);
-		editor.setLine(lineNumber, newLine);
+		const newLine = yamlFormatTags(lines.join("\n"), "multiLine");
+		editor.replaceRange(
+			newLine,
+			{ line: startLine, ch: 0 },
+			{ line: endLine, ch: endCh }
+		);
+	}
+
+	getTagBlockBounds(editor: Editor): [start: number, end: number] {
+		const eof = editor.lastLine();
+		let line = "";
+		let i = 1;
+		let start: number;
+		let end: number;
+		do {
+			line = editor.getLine(i);
+
+			if (line.includes("tag:") || line.includes("tags:")) {
+				start = i;
+			} else if (start && line.includes(":")) {
+				end = i - 1;
+			}
+
+			i++;
+		} while (i <= eof && !line.includes("---"));
+
+		if (!end) end = i - 2;
+
+		return [start, end];
 	}
 
 	matchPartialTag(
