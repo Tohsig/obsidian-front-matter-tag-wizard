@@ -55,7 +55,7 @@ class TagWizard extends EditorSuggest<string> {
 		file: TFile
 	): EditorSuggestTriggerInfo {
 		if (!this.isValidLine(cursor, editor, file)) return null;
-		this.updateTags(file);
+		this.updateTags();
 
 		const line = editor.getLine(cursor.line).slice(0, cursor.ch);
 		const matched = line.match(this.matchLast);
@@ -106,7 +106,7 @@ class TagWizard extends EditorSuggest<string> {
 		if (line.match(this.matchTagsKey) !== null) return true;
 	}
 
-	updateTags(file: TFile) {
+	updateTags() {
 		const cache = this.app.metadataCache;
 		const files = this.app.vault.getMarkdownFiles();
 		this.tags = extractTags(cache, files);
