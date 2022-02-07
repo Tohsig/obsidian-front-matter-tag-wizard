@@ -1,4 +1,4 @@
-# Obsidian Frontmatter Tag Wizard - Beta
+# Obsidian Frontmatter Tag Wizard
 
 Tired of having to type `#` to get tag autocompletion in your [Obsidian](https://obsidian.md/) note frontmatter? I feel your pain. This plugin enables tag autocompletion in your frontmatter...and beautifully formats those same tags to boot!
 
@@ -16,18 +16,18 @@ Tired of having to type `#` to get tag autocompletion in your [Obsidian](https:/
   - Can seamlessly convert single line tags to multiline tags and vice versa.
   - Optional removal of the `#` and `"` characters from tags (default: `enabled`).
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Getting Started
 
-This plugin has not yet been submitted to Obsidian for review, but in the meantime it can be installed for testing via the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin.
-
-Once that plugin is installed, you can go to its settings page, click "Add Beta plugin" and enter the following URL:
+This plugin has not yet been submitted to Obsidian for review, but in the meantime it can be installed for testing via the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin. Once that plugin is installed, you can go to its settings page, click "Add Beta plugin" and enter the following URL:
 ```
 https://github.com/Tohsig/obsidian-frontmatter-tag-wizard
 ```
 
-Once installed and enabled, Frontmatter Tag Wizard will immediately start giving you tag autocompletion and autoformatting.
+Once installed and enabled, Frontmatter Tag Wizard will immediately start giving you tag autocompletion and autoformatting. If you only want the autocompletion, you can go to the Frontmatter Tag Wizard settings and turn off the autoformatting completely.
 
-If you only want the autocompletion, you can go to the Frontmatter Tag Wizard settings and turn off the autoformatting completely.
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Roadmap
 
@@ -35,10 +35,16 @@ If you only want the autocompletion, you can go to the Frontmatter Tag Wizard se
 - [ ] Allow autoformatter to edit background notes.
 - [ ] Get some saner YAML parsing in here.
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Contributing
+
 Feel free to submit issues for bug reports and additional features! This is a project I spun up to support my daily workflow, so I'll be very interested to hear how it does elsewhre.
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Known Issues
+
 I wrote the first version of this plugin over a weekend, so it has some goofy edge cases. This plugin is designed to support my daily workflow...so these will definitely get fixed.
 
 ### The...did it work?
@@ -80,6 +86,16 @@ tags:
   - -sampleTag
 ```
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+## License 
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Acknowledgments
 
 Huge thanks to the incredible [Obsidian Dataview](https://github.com/blacksmithgu/obsidian-dataview) and [Obsidian Plugin Developer Docs](https://marcus.se.net/obsidian-plugin-docs/) projects. I was able to learn a ton about Obsidian's API from both, and I highly recommend them if you want to develop a plugin.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
