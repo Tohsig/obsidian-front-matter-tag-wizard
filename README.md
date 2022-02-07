@@ -1,15 +1,15 @@
-# Obsidian Frontmatter Tag Wizard
+# Obsidian Front Matter Tag Wizard
 
-Tired of having to type `#` to get tag autocompletion in your [Obsidian](https://obsidian.md/) note frontmatter? I feel your pain. This plugin enables tag autocompletion in your frontmatter...and beautifully formats those same tags to boot!
+Tired of having to type `#` to get tag autocompletion in your [Obsidian](https://obsidian.md/) note front matter? I feel your pain. This plugin enables tag autocompletion in your front matter...and beautifully formats those same tags to boot!
 
 ![](single-line-demo.gif)
 
 ## Features
 
-- Enables Tag autocompletion in frontmatter.
+- Enables Tag autocompletion in front matter.
 - Fully supports multiline tags!
 - Optional Tag Autoformatting (default: `enabled`).
-  - Only affects frontmatter tags.
+  - Only affects front matter tags.
   - Standardizes tag spacing
   - Removes duplicate tags.
   - Indents mutliline tags
@@ -22,16 +22,16 @@ Tired of having to type `#` to get tag autocompletion in your [Obsidian](https:/
 
 This plugin has not yet been submitted to Obsidian for review, but in the meantime it can be installed for testing via the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin. Once that plugin is installed, you can go to its settings page, click "Add Beta plugin" and enter the following URL:
 ```
-https://github.com/Tohsig/obsidian-frontmatter-tag-wizard
+https://github.com/Tohsig/obsidian-front-matter-tag-wizard
 ```
 
-Once installed and enabled, Frontmatter Tag Wizard will immediately start giving you tag autocompletion and autoformatting. If you only want the autocompletion, you can go to the Frontmatter Tag Wizard settings and turn off the autoformatting completely.
+Once installed and enabled, Front matter Tag Wizard will immediately start giving you tag autocompletion and autoformatting. If you only want the autocompletion, you can go to the Front matter Tag Wizard settings and turn off the autoformatting completely.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Roadmap
 
-- [ ] Add an option to sort frontmatter tags alphabetically.
+- [ ] Add an option to sort front matter tags alphabetically.
 - [ ] Allow autoformatter to edit background notes.
 - [ ] Get some saner YAML parsing in here.
 
@@ -52,10 +52,10 @@ If you type out a tag without using the autocomplete suggestion and then immedia
 
 **Workaround**
 
-Always use the suggestion pop up, or always move the cursor off of the frontmatter tags before switching notes. Either will trigger the formatting.
+Always use the suggestion pop up, or always move the cursor off of the front matter tags before switching notes. Either will trigger the formatting.
 
 ### The Speed Demon
-If you're using multiline mode, your `tags:` key is at the bottom of your frontmatter, and you hit `enter` quickly...there's a chance that the autoformatter will kick in and remove all of empty lines (including your cursor line).
+If you're using multiline mode, your `tags:` key is at the bottom of your front matter, and you hit `enter` quickly...there's a chance that the autoformatter will kick in and remove all of empty lines (including your cursor line).
 
 **Workaround**
 
