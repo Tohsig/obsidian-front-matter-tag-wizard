@@ -37,8 +37,11 @@ function isCursorOnTagLine(cursor: EditorPosition, editor: Editor) {
 	} else {
 		test = getPreviousYamlKey(editor, cursor.line);
 	}
-
-	return test.match(matchTagsKey) !== null;
+	if (test) {
+		return test.match(matchTagsKey) !== null;
+	} else {
+		return false;
+	}
 }
 
 export function cursorOnFrontmatterTagLine(
