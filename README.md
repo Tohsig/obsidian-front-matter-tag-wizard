@@ -1,9 +1,11 @@
 # Obsidian Frontmatter Tag Wizard - Beta
+
 Tired of having to type `#` to get tag autocompletion in your [Obsidian](https://obsidian.md/) note frontmatter? I feel your pain. This plugin enables tag autocompletion in your frontmatter...and beautifully formats those same tags to boot!
 
 ![](single-line-demo.gif)
 
 ## Features
+
 - Enables Tag autocompletion in frontmatter.
 - Fully supports multiline tags!
 - Optional Tag Autoformatting (default: `enabled`).
@@ -43,18 +45,21 @@ I wrote the first version of this plugin over a weekend, so it has some goofy ed
 If you type out a tag without using the autocomplete suggestion and then immediately click on another note, the autoformatter may not run.
 
 **Workaround**
+
 Always use the suggestion pop up, or always move the cursor off of the frontmatter tags before switching notes. Either will trigger the formatting.
 
 ### The Speed Demon
 If you're using multiline mode, your `tags:` key is at the bottom of your frontmatter, and you hit `enter` quickly...there's a chance that the autoformatter will kick in and remove all of empty lines (including your cursor line).
 
 **Workaround**
+
 I guess this is a borderline feature. I have a partial workaround in the code already, so you may never see this one.
 
 ### The Dine and Dash
 If you're using multiline mode *and* you have tags that start with one or more dashes (e.g. `-sampleTag`), the first dash will be removed in a very specific situation. Dashes in between tag words are not affected (e.g. `sample-tag`).
 
 **Workaround**
+
 This bug is due to how I'm handling YAML at the moment. Workaround is in the example below.
 
 ```yaml
