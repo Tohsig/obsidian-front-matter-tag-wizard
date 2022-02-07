@@ -1,6 +1,8 @@
 # Obsidian Frontmatter Tag Wizard - Beta
 Tired of having to type `#` to get tag autocompletion in your [Obsidian](https://obsidian.md/) note frontmatter? I feel your pain. This plugin enables tag autocompletion in your frontmatter...and beautifully formats those same tags to boot!
 
+![](single-line-demo.gif)
+
 ## Features
 - Enables Tag autocompletion in frontmatter.
 - Fully supports multiline tags!
