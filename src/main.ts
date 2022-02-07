@@ -1,26 +1,26 @@
 import { Plugin } from "obsidian";
 import { TagWizardSuggest } from "./tagWizardSuggest";
-import { FrontmatterTagWizardPluginSettingsTab } from "./userSettings";
+import { FrontMatterTagWizardPluginSettingsTab } from "./userSettings";
 
-export interface FrontmatterTagWizardPluginSettings {
+export interface FrontMatterTagWizardPluginSettings {
 	mode: "singleLine" | "multiLine";
 	autoFormat: boolean;
 	removeExtraCharacters: boolean;
 }
 
-const DEFAULT_SETTINGS: FrontmatterTagWizardPluginSettings = {
+const DEFAULT_SETTINGS: FrontMatterTagWizardPluginSettings = {
 	mode: "singleLine",
 	autoFormat: true,
 	removeExtraCharacters: true,
 };
 
-export class FrontmatterTagWizardPlugin extends Plugin {
-	settings: FrontmatterTagWizardPluginSettings;
+export class FrontMatterTagWizardPlugin extends Plugin {
+	settings: FrontMatterTagWizardPluginSettings;
 
 	async onload() {
 		await this.loadSettings();
 		this.addSettingTab(
-			new FrontmatterTagWizardPluginSettingsTab(this.app, this)
+			new FrontMatterTagWizardPluginSettingsTab(this.app, this)
 		);
 		this.registerEditorSuggest(
 			new TagWizardSuggest(this.app, this.settings)
@@ -39,4 +39,4 @@ export class FrontmatterTagWizardPlugin extends Plugin {
 	}
 }
 
-export default FrontmatterTagWizardPlugin;
+export default FrontMatterTagWizardPlugin;

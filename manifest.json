@@ -1,9 +1,9 @@
 {
-	"id": "obsidian-frontmatter-tag-wizard",
-	"name": "Frontmatter Tag Wizard",
+	"id": "obsidian-front-matter-tag-wizard",
+	"name": "Front Matter Tag Wizard",
 	"version": "0.1.0",
 	"minAppVersion": "0.12.0",
-	"description": "Adds tag autocompletion and optional autoformatting to note frontmatter.",
+	"description": "Adds tag autocompletion and optional autoformatting to note front matter.",
 	"author": "Tohsig",
 	"authorUrl": "https://github.com/Tohsig",
 	"isDesktopOnly": false

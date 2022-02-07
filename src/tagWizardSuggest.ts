@@ -8,9 +8,9 @@ import {
 	App,
 } from "obsidian";
 import { extractTagsFromFileCaches } from "./extractTagsFromFileCaches";
-import { cursorOnFrontmatterTagLine } from "./cursorOnFrontmatterTagLine";
+import { cursorOnFrontMatterTagLine } from "./cursorOnFrontMatterTagLine";
 import { yamlFormatTags } from "./yamlFormatTags";
-import { FrontmatterTagWizardPluginSettings } from "./main";
+import { FrontMatterTagWizardPluginSettings } from "./main";
 
 const matchLastTag = /[\w-]+$/;
 
@@ -20,9 +20,9 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 	private prevFileName: string;
 	private queueFormatTagValues = false;
 	private tagLineStart = 0;
-	private settings: FrontmatterTagWizardPluginSettings;
+	private settings: FrontMatterTagWizardPluginSettings;
 
-	constructor(app: App, settings: FrontmatterTagWizardPluginSettings) {
+	constructor(app: App, settings: FrontMatterTagWizardPluginSettings) {
 		super(app);
 		this.app = app;
 		this.settings = settings;
@@ -36,7 +36,7 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 		this.curFileName = file.name;
 
 		const cache = this.app.metadataCache.getFileCache(file);
-		if (!cursorOnFrontmatterTagLine(cache, cursor, editor)) {
+		if (!cursorOnFrontMatterTagLine(cache, cursor, editor)) {
 			if (this.queueFormatTagValues) this.formatTags(editor);
 			return null;
 		}
