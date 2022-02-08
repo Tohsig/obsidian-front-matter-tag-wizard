@@ -1,3 +1,4 @@
+<div id="top"></div>
 # Obsidian Front Matter Tag Wizard
 
 Tired of having to type `#` to get tag autocompletion in your [Obsidian](https://obsidian.md/) note front matter? I feel your pain. This plugin enables tag autocompletion in your front matter...and beautifully formats those same tags to boot!
