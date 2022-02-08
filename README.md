@@ -21,6 +21,8 @@ https://github.com/Tohsig/obsidian-front-matter-tag-wizard
 
 After you've installed Front matter Tag Wizard, you can enable it from the Community Plugins list. It will immediately start giving you tag autocompletion and autoformatting.
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Auto-formatting
 The built in auto-formatting is enabled by default and **only affects front matter tags**. No need to worry about the rest of your note. It will trigger automatically whenever you select an autocomplete suggestion (via `enter` or `mouseclick`), or when your cursor leaves the `tags:` list in your front matter.
 
