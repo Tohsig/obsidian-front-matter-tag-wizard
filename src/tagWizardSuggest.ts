@@ -12,7 +12,7 @@ import { cursorOnFrontMatterTagLine } from "./cursorOnFrontMatterTagLine";
 import { yamlFormatTags } from "./yamlFormatTags";
 import { FrontMatterTagWizardPluginSettings } from "./main";
 
-const matchLastTag = /[\w-]+\/?[\w-]+$/;
+const matchLastTag = /[\/\w-]+$/;
 
 export class TagWizardSuggest extends EditorSuggest<string> {
 	private app: App;
