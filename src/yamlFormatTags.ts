@@ -1,5 +1,5 @@
-const reReplace = /^\s*-|[:\s,]+/g;
-const reReplaceExtra = /^\s*-|[:\s,#"']+/g;
+const reReplace = /^\s*|[:\s,]+/g;
+const reReplaceExtra = /^\s*|[:\s,#"']+/g;
 const reSplit = /[^:\s,]+/g;
 const reSplitExtra = /[^:\s,#"']+/g;
 
@@ -9,8 +9,9 @@ function parseTags(text: string, removeExtraCharacters: boolean) {
 	if (text.includes("\n")) {
 		const re = removeExtraCharacters ? reReplaceExtra : reReplace;
 		const [_head, ...tail] = text
-			.split("\n")
+			.split(" ")
 			.map((t) => t.replace(re, ""))
+			.filter((t) => t !== "-")
 			.filter((t) => t.length);
 
 		tagSet = new Set(tail);
