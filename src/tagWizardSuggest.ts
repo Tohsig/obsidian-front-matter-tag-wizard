@@ -12,7 +12,7 @@ import { cursorOnFrontMatterTagLine } from "./cursorOnFrontMatterTagLine";
 import { yamlFormatTags } from "./yamlFormatTags";
 import { FrontMatterTagWizardPluginSettings } from "./main";
 
-const matchLastTag = /[\w-]+$/;
+const matchLastTag = /[\w-]+\/?[\w-]+$/;
 
 export class TagWizardSuggest extends EditorSuggest<string> {
 	private app: App;
@@ -77,6 +77,7 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 			this.settings.mode,
 			this.settings.removeExtraCharacters
 		);
+
 		editor.replaceRange(
 			newLine,
 			{ line: startLine, ch: 0 },
@@ -117,7 +118,7 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 		const matched = line.match(matchLastTag);
 
 		if (matched !== null) {
-			return {
+			const context: EditorSuggestTriggerInfo = {
 				start: {
 					ch: matched.index,
 					line: cursor.line,
@@ -125,6 +126,8 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 				end: cursor,
 				query: matched[0],
 			};
+
+			return context;
 		}
 
 		return null;
