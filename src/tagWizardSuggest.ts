@@ -58,6 +58,7 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 
 	formatTags(editor: Editor): void {
 		if (!this.settings.autoFormat) return;
+		this.queueFormatTagValues = false;
 
 		const [startLine, endLine] = this.getTagBlockBounds(editor);
 		if (!startLine || !endLine) return;
@@ -70,7 +71,6 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 			if (i === endLine) endCh = line.length;
 		}
 
-		this.queueFormatTagValues = false;
 		if (this.curFileName !== this.prevFileName) return;
 		const newLine = yamlFormatTags(
 			lines.join("\n"),
@@ -103,7 +103,7 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 			}
 
 			i++;
-		} while (!end || !line.includes("---"));
+		} while (!end && i <= eof);
 
 		if (!end) end = i - 2;
 
