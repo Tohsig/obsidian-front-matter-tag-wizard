@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-front-matter-tag-wizard",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "This plugin streamlines adding tags to a note's YAML front matter.",
 	"main": "main.js",
 	"scripts": {
