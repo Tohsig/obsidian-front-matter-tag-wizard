@@ -29,16 +29,17 @@ function getPreviousYamlKey(
 	}
 }
 
-const matchTagsKey = /tags:|tag:/i;
+const matchTagsKey = /tags:\s|tag:\s/i;
 function isCursorOnTagLine(cursor: EditorPosition, editor: Editor) {
 	let test: string;
 
 	const line = editor.getLine(cursor.line);
+	if (line.trim() === "---") return false;
 
 	if (line.includes(":")) {
 		test = line;
-	} else if (line.match(/^\s*-\s/)) {
-		test = getPreviousYamlKey(editor, cursor.line);
+	} else if (line.match(/^\s*-\s*/)) {
+		test = getPreviousYamlKey(editor, cursor.line) + " ";
 	}
 
 	if (test) {
