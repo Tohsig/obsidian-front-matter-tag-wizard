@@ -8,23 +8,29 @@ Tired of having to type `#` to get tag autocompletion in your [Obsidian](https:/
 
 - Enables unprefixed Tag autocompletion in front matter!
 - Fully supports multiline tags!
-- Optional auto-formatting for tags (`default: enabled`)!
+- Optional auto-formatting for tags (default: `enabled`)!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Getting Started
 
-This plugin has not yet been submitted to Obsidian for review, but in the meantime it can be installed for testing via the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin. Once you have BRAT, you can go to its settings page, click "Add Beta plugin" and enter the following URL:
+This plugin has not yet been submitted to Obsidian for review, but in the meantime it can be installed for testing via the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin. 
+
+1. Install [BRAT](https://github.com/TfTHacker/obsidian42-brat)
+2. Go to the `Obsidian42 - BRAT` options tab
+3. Click `Add Beta plugin` and enter the folling URL:
 ```
 https://github.com/Tohsig/obsidian-front-matter-tag-wizard
 ```
+4. Open the `Community Plugins` tab
+5. Search for `Front Matter Tag Wizard` and enable the plugin.
 
-After you've installed Front matter Tag Wizard, you can enable it from the Community Plugins list. It will immediately start giving you tag autocompletion and autoformatting.
+Done! You should immediately get tag autocompletion and autoformatting in the front matter of your notes.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Auto-formatting
-The built in auto-formatting is enabled by default and **only affects front matter tags**. No need to worry about the rest of your note. It will trigger automatically whenever you select an autocomplete suggestion (via `enter` or `mouseclick`), or when your cursor leaves the `tags:` list in your front matter.
+The built in auto-formatting is enabled by default and **only affects front matter tags**. No need to worry about the rest of your content. It will trigger automatically whenever you select an autocomplete suggestion (via `enter` or `mouseclick`), or when your cursor leaves the `tags:` list in your front matter.
 
 When it runs, the auto-formatter will remove duplicate tags and then standardize tag formatting according to these options:
 
