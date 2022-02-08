@@ -34,9 +34,10 @@ function isCursorOnTagLine(cursor: EditorPosition, editor: Editor) {
 
 	if (line.includes(":")) {
 		test = line;
-	} else {
+	} else if (line.match(/^\s*-\s/)) {
 		test = getPreviousYamlKey(editor, cursor.line);
 	}
+
 	if (test) {
 		return test.match(matchTagsKey) !== null;
 	} else {

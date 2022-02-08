@@ -95,12 +95,14 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 
 			if (line.includes("tag:") || line.includes("tags:")) {
 				start = i;
-			} else if (start && line.includes(":")) {
-				end = i - 1;
+			} else if (start && !end) {
+				if (line.match(/^\s*-\s/) === null) {
+					end = i - 1;
+				}
 			}
 
 			i++;
-		} while (i <= eof && !line.includes("---"));
+		} while (!end || !line.includes("---"));
 
 		if (!end) end = i - 2;
 
