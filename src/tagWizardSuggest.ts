@@ -145,7 +145,7 @@ export class TagWizardSuggest extends EditorSuggest<string> {
 
 	renderSuggestion(suggestion: string, el: HTMLElement): void {
 		const outer = el.createDiv();
-		outer.createDiv().setText(`#${suggestion}`);
+		outer.createDiv().setText(`${suggestion}`);
 	}
 
 	selectSuggestion(suggestion: string): void {
