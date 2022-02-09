@@ -5,10 +5,17 @@ import { EditorPosition, SectionCache, Editor, CachedMetadata } from "obsidian";
  * position on a regular tick, so if you're in multiline mode and jam enter
  * fast enough this function will incorrectly return false.
  */
-function isCursorInFrontMatter(cursor: EditorPosition, cache: CachedMetadata) {
+function isCursorInFrontMatter(
+	cursor: EditorPosition,
+	cache: CachedMetadata,
+	editor: Editor
+) {
 	const head = cache.sections?.first();
 	if (!head) return false;
 	if (head.type !== "yaml") return false;
+
+	const line = editor.getLine(cursor.line);
+	if (line === "---") return false;
 	if (cursor.line > head.position.end.line + 1) return false;
 
 	return true;
@@ -54,7 +61,7 @@ export function cursorOnFrontMatterTagLine(
 	cursor: EditorPosition,
 	editor: Editor
 ): boolean {
-	if (!isCursorInFrontMatter(cursor, cache)) {
+	if (!isCursorInFrontMatter(cursor, cache, editor)) {
 		return false;
 	}
 
