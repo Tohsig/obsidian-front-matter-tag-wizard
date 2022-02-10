@@ -16,7 +16,7 @@ Tired of having to type `#` to get tag autocompletion in your [Obsidian](https:/
 
 ## Getting Started
 
-This plugin has not yet been submitted to Obsidian for review, but in the meantime it can be installed for testing via the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin. 
+This plugin has been submitted to Obsidian for review, but in the meantime it can be installed for testing via the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin. 
 
 1. Install [BRAT](https://github.com/TfTHacker/obsidian42-brat)
 2. Go to the `Obsidian42 - BRAT` options tab
