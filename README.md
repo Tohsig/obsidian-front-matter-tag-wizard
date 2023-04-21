@@ -1,5 +1,10 @@
 <div id="top"></div>
 
+# DEPRECATION NOTICE
+I'm no longer working on this plugin as the [Completr](https://github.com/tth05/obsidian-completr) plugin from tth05 is a much more complete version of what I set out to do. It's what I now use day-to-day, and I highly recommend it.
+
+---
+
 # Obsidian Front Matter Tag Wizard
 
 Tired of having to type `#` to get tag autocompletion in your [Obsidian](https://obsidian.md/) note front matter? I feel your pain. This plugin enables tag autocompletion in your front matter...and beautifully formats those same tags to boot!
